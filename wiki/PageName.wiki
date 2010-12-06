@@ -1,5 +1,5 @@
-#summary One-sentence summary of this page.
 #labels python,diameter,rfc3588,rfc4006
+#Begin [PyDiameterCore]
 
 = Introduction =
 
@@ -7,4 +7,8 @@ Python Diameter Module
 
 = Details =
 
-PyDiameterCore
+[PyDiameterCore]
+
+Python realized Diameter Credit-Control Application. 
+
+Reference [RFC 4006] and [RFC 3588]. 
