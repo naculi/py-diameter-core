@@ -33,7 +33,7 @@ class Address(OctetString):
         
         # 编码时根据传入的IP字符串判断地址族
         self.__addr_info = getaddrinfo(self.avp['AVP_DATA'],
-                                self.dcc.dcc_def.const.DIAMETE_ADDRESS_PORT)
+                                self.dcc.dcc_def.DIAMETE_ADDRESS_PORT)
         
         if self.__addr_info[0][0] == AF_INET:
             self.avp['AVP_ADDR_FAMILY'] = 1
@@ -44,7 +44,7 @@ class Address(OctetString):
     def _AVP__set_avp_operator_type(self):
         '''需要根据不同的数据长度来设置解码格式'''
         # 认为正在编码
-        if self.avp['AVP_CODE_STATE'] == self.dcc.dcc_def.const.ENCODE_DCC_AVP_BEGIN:
+        if self.avp['AVP_CODE_STATE'] == self.dcc.dcc_def.ENCODE_DCC_AVP_BEGIN:
             if self.avp['AVP_ADDR_FAMILY'] == 1:
                 self.avp['AVP_CODE_OPERATOR'] = "!h6s"
                 # 数据长度=地址族标志(2)+地址编码(4)
@@ -55,7 +55,7 @@ class Address(OctetString):
                 # IPv6的没有实际编辑过，需要在unix上试一下再完善
                 self.avp['AVP_LENGTH'] = 18
         # 认为正在解码
-        elif self.avp['AVP_CODE_STATE'] == self.dcc.dcc_def.const.DECODE_DCC_AVP_HEAD_END:
+        elif self.avp['AVP_CODE_STATE'] == self.dcc.dcc_def.DECODE_DCC_AVP_HEAD_END:
             # 根据self.avp['AVP_LENGTH']进行判断
             if self.avp['AVP_VENDOR_ID'] == 0x00:
                 __data_length = self.avp['AVP_LENGTH'] - 10
@@ -74,7 +74,7 @@ class Address(OctetString):
         '''解码AVP包体数据
                      返回本次解码AVP包的总长度
         '''
-        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.const.DECODE_DCC_AVP_BODY_BEGIN
+        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.DECODE_DCC_AVP_BODY_BEGIN
         
         (self.avp['AVP_ADDR_FAMILY'], self.avp['AVP_DATA']) \
             = self.dcc.unpack_from_bin(self.avp['AVP_CODE_OPERATOR'], 
@@ -84,7 +84,7 @@ class Address(OctetString):
         # 解码数据类型后进行一些后续处理
         self._AVP__after_decode_data()
         
-        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.const.DECODE_DCC_AVP_BODY_END
+        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.DECODE_DCC_AVP_BODY_END
         return self.avp['AVP_LENGTH']
     
     def _AVP__after_decode_data(self):

@@ -28,7 +28,7 @@ class DCC(object):
         self.dcc_err = DCC_ERR
         self.dcc_def = DCC_DEF
         
-        self.TIMEFORMAT=self.dcc_def.const.COMPACTTIMEFORMAT
+        self.TIMEFORMAT = self.dcc_def.COMPACTTIMEFORMAT
         self.seconds_between_1900_and_1970 = ((70*365)+17)*86400
         
     def __del__(self):
@@ -47,7 +47,7 @@ class DCC(object):
                                 故如果没有内置则采用第三方模块：
             Contact mailto:patrickdlogan@stardecisions.com
             '''
-            path.insert(0, self.dcc_def.const.PLUS_PATH)
+            path.insert(0, self.dcc_def.PLUS_PATH)
             from minjson import read as loads
             
         return loads(json_str)
@@ -61,7 +61,7 @@ class DCC(object):
                                 故如果没有内置则采用第三方模块：
             Contact mailto:patrickdlogan@stardecisions.com
             '''
-            path.insert(0, self.dcc_def.const.PLUS_PATH)
+            path.insert(0, self.dcc_def.PLUS_PATH)
             from minjson import write as dumps
             
         return dumps(obj)
@@ -80,13 +80,13 @@ class DCC(object):
         '将年月日的时间格式转换为NTP时间戳,'
         # TIMEFORMAT = '2009-03-13 10:28:35'
         if len(time_str) == 19:
-            myFormat = strptime(time_str, self.dcc_def.const.ISOTIMEFORMAT)
+            myFormat = strptime(time_str, self.dcc_def.ISOTIMEFORMAT)
             outStamp = mktime(myFormat)
             outStamp = outStamp + self.seconds_between_1900_and_1970
             return outStamp
         # TIMEFORMAT = '20090313102835'
         elif len(time_str) == 14:
-            myFormat = strptime(time_str, self.dcc_def.const.COMPACTTIMEFORMAT)
+            myFormat = strptime(time_str, self.dcc_def.COMPACTTIMEFORMAT)
             outStamp = mktime(myFormat)
             outStamp = outStamp + self.seconds_between_1900_and_1970
             return outStamp
@@ -98,11 +98,11 @@ class DCC(object):
         '将年月日的时间格式转换为UTC时间戳'
         # TIMEFORMAT = '2009-03-13 10:28:35'
         if len(time_str) == 19:
-            myFormat = strptime(time_str, self.dcc_def.const.ISOTIMEFORMAT)
+            myFormat = strptime(time_str, self.dcc_def.ISOTIMEFORMAT)
             return mktime(myFormat)
         # TIMEFORMAT = '20090313102835'
         elif len(time_str) == 14:
-            myFormat = strptime(time_str, self.dcc_def.const.COMPACTTIMEFORMAT)
+            myFormat = strptime(time_str, self.dcc_def.COMPACTTIMEFORMAT)
             return mktime(myFormat)
         else:
             raise DCC_ERR.AvpE_InvalidInitParam,\
@@ -144,29 +144,29 @@ class DCC(object):
     def catch_cmd_code(self, cmd_code_str):
         '根据传入的CMD_CODE描述串，获取系统自定义的常量'
         if cmd_code_str == 'CCR':
-            return self.dcc_def.const.CREDIT_CONTROL_REQUEST
+            return self.dcc_def.CREDIT_CONTROL_REQUEST
         elif cmd_code_str == 'CCA':
-            return self.dcc_def.const.CREDIT_CONTROL_ANSWER
+            return self.dcc_def.CREDIT_CONTROL_ANSWER
         elif cmd_code_str == 'RAR':
-            return self.dcc_def.const.RE_AUTH_REQUEST
+            return self.dcc_def.RE_AUTH_REQUEST
         elif cmd_code_str == 'RAA':
-            return self.dcc_def.const.RE_AUTH_ANSWER
+            return self.dcc_def.RE_AUTH_ANSWER
         elif cmd_code_str == 'ASR':
-            return self.dcc_def.const.ABORT_SESSION_REQUEST
+            return self.dcc_def.ABORT_SESSION_REQUEST
         elif cmd_code_str == 'ASA':
-            return self.dcc_def.const.ABORT_SESSION_ANSWER
+            return self.dcc_def.ABORT_SESSION_ANSWER
         elif cmd_code_str == 'DWR':
-            return self.dcc_def.const.DEVICE_WATCHDOG_REQUEST
+            return self.dcc_def.DEVICE_WATCHDOG_REQUEST
         elif cmd_code_str == 'DWA':
-            return self.dcc_def.const.DEVICE_WATCHDOG_ANSWER
+            return self.dcc_def.DEVICE_WATCHDOG_ANSWER
         elif cmd_code_str == 'DPR':
-            return self.dcc_def.const.DISCONNECT_PEER_REQUEST
+            return self.dcc_def.DISCONNECT_PEER_REQUEST
         elif cmd_code_str == 'DPA':
-            return self.dcc_def.const.DISCONNECT_PEER_ANSWER
+            return self.dcc_def.DISCONNECT_PEER_ANSWER
         elif cmd_code_str == 'CER':
-            return self.dcc_def.const.CAPABILITIES_EXCHANGE_REQUEST
+            return self.dcc_def.CAPABILITIES_EXCHANGE_REQUEST
         elif cmd_code_str == 'CEA':
-            return self.dcc_def.const.CAPABILITIES_EXCHANGE_ANSWER
+            return self.dcc_def.CAPABILITIES_EXCHANGE_ANSWER
         else:
             raise self.dcc_err.DccE_InvalidDccType, \
                         "The CMD_CODE Error:%s" % cmd_code_str

@@ -24,12 +24,12 @@ class OctetString(AVP):
         
     def _AVP__set_avp_operator_type(self):
         # 认为正在编码
-        if self.avp['AVP_CODE_STATE'] == self.dcc.dcc_def.const.ENCODE_DCC_AVP_BEGIN:
+        if self.avp['AVP_CODE_STATE'] == self.dcc.dcc_def.ENCODE_DCC_AVP_BEGIN:
             self.avp['AVP_LENGTH'] = len(self.avp['AVP_DATA'])
             __data_length = (self.avp['AVP_LENGTH'] + 3) // 4 * 4
             self.avp['AVP_CODE_OPERATOR'] = "!" + str(__data_length) + "s"
         # 认为正在解码
-        elif self.avp['AVP_CODE_STATE'] == self.dcc.dcc_def.const.DECODE_DCC_AVP_HEAD_END:
+        elif self.avp['AVP_CODE_STATE'] == self.dcc.dcc_def.DECODE_DCC_AVP_HEAD_END:
             # 根据self.avp['AVP_LENGTH']进行判断
             if self.avp['AVP_VENDOR_ID'] == 0x00:
                 __data_length = self.avp['AVP_LENGTH'] - 8

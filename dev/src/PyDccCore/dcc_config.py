@@ -21,7 +21,7 @@ CCR,CCA,...等数组分别保存对应的配置文件信息
     CmdCode的KEY是 CODE与FLAGS的组合
     CCR,CCA,...等的KEY就是AVP_CODE
     
-    配置文件都需要保存到etc目录下，否则请修改 avp_const_define.const.ETC_PATH
+    配置文件都需要保存到etc目录下，否则请修改 avp_const_define.ETC_PATH
 '''
 import re
 from os.path import sep
@@ -32,7 +32,7 @@ import dcc_error as DCC_ERR
 class DCC_CFG(object):
     '''配置文件处理类'''
     def __init__(self):
-        self.etc_path = DCC_DEF.const.ETC_PATH
+        self.etc_path = DCC_DEF.ETC_PATH
         self.re_str_fmt = re.compile("\s+")
         self.re_ltrip_space = re.compile("^\s+")
         
@@ -106,29 +106,29 @@ class DCC_CFG(object):
         
     def __switch_file(self, cmd_code, request_flag, cmd_name):
         '根据不同的CmdCodeStr返回应该复制的字段属性'
-        if (cmd_code, request_flag) == DCC_DEF.const.CREDIT_CONTROL_REQUEST:
+        if (cmd_code, request_flag) == DCC_DEF.CREDIT_CONTROL_REQUEST:
             self.CCR = self.__read_AvpFile(cmd_name)
-        elif (cmd_code, request_flag) == DCC_DEF.const.CREDIT_CONTROL_ANSWER:
+        elif (cmd_code, request_flag) == DCC_DEF.CREDIT_CONTROL_ANSWER:
             self.CCA = self.__read_AvpFile(cmd_name)
-        elif (cmd_code, request_flag) == DCC_DEF.const.RE_AUTH_REQUEST:
+        elif (cmd_code, request_flag) == DCC_DEF.RE_AUTH_REQUEST:
             self.RAR = self.__read_AvpFile(cmd_name)
-        elif (cmd_code, request_flag) == DCC_DEF.const.RE_AUTH_ANSWER:
+        elif (cmd_code, request_flag) == DCC_DEF.RE_AUTH_ANSWER:
             self.RAA = self.__read_AvpFile(cmd_name)
-        elif (cmd_code, request_flag) == DCC_DEF.const.ABORT_SESSION_REQUEST:
+        elif (cmd_code, request_flag) == DCC_DEF.ABORT_SESSION_REQUEST:
             self.ASR = self.__read_AvpFile(cmd_name)
-        elif (cmd_code, request_flag) == DCC_DEF.const.ABORT_SESSION_ANSWER:
+        elif (cmd_code, request_flag) == DCC_DEF.ABORT_SESSION_ANSWER:
             self.ASA = self.__read_AvpFile(cmd_name)
-        elif (cmd_code, request_flag) == DCC_DEF.const.DEVICE_WATCHDOG_REQUEST:
+        elif (cmd_code, request_flag) == DCC_DEF.DEVICE_WATCHDOG_REQUEST:
             self.DWR = self.__read_AvpFile(cmd_name)
-        elif (cmd_code, request_flag) == DCC_DEF.const.DEVICE_WATCHDOG_ANSWER:
+        elif (cmd_code, request_flag) == DCC_DEF.DEVICE_WATCHDOG_ANSWER:
             self.DWA = self.__read_AvpFile(cmd_name)
-        elif (cmd_code, request_flag) == DCC_DEF.const.DISCONNECT_PEER_REQUEST:
+        elif (cmd_code, request_flag) == DCC_DEF.DISCONNECT_PEER_REQUEST:
             self.DPR = self.__read_AvpFile(cmd_name)
-        elif (cmd_code, request_flag) == DCC_DEF.const.DISCONNECT_PEER_ANSWER:
+        elif (cmd_code, request_flag) == DCC_DEF.DISCONNECT_PEER_ANSWER:
             self.DPA = self.__read_AvpFile(cmd_name)
-        elif (cmd_code, request_flag) == DCC_DEF.const.CAPABILITIES_EXCHANGE_REQUEST:
+        elif (cmd_code, request_flag) == DCC_DEF.CAPABILITIES_EXCHANGE_REQUEST:
             self.CER = self.__read_AvpFile(cmd_name)
-        elif (cmd_code, request_flag) == DCC_DEF.const.CAPABILITIES_EXCHANGE_ANSWER:
+        elif (cmd_code, request_flag) == DCC_DEF.CAPABILITIES_EXCHANGE_ANSWER:
             self.CEA = self.__read_AvpFile(cmd_name)
         else:
             raise DCC_ERR.AvpE_InvalidEtcParam, \
@@ -159,57 +159,57 @@ class DCC_CFG(object):
             if avp_code:
                 avp_code = str(avp_code)
                 
-                if cmd_code == DCC_DEF.const.CREDIT_CONTROL_REQUEST:
+                if cmd_code == DCC_DEF.CREDIT_CONTROL_REQUEST:
                     return self.CCR[avp_code]
-                elif cmd_code == DCC_DEF.const.CREDIT_CONTROL_ANSWER:
+                elif cmd_code == DCC_DEF.CREDIT_CONTROL_ANSWER:
                     return self.CCA[avp_code]
-                elif cmd_code == DCC_DEF.const.RE_AUTH_REQUEST:
+                elif cmd_code == DCC_DEF.RE_AUTH_REQUEST:
                     return self.RAR[avp_code]
-                elif cmd_code == DCC_DEF.const.RE_AUTH_ANSWER:
+                elif cmd_code == DCC_DEF.RE_AUTH_ANSWER:
                     return self.RAA[avp_code]
-                elif cmd_code == DCC_DEF.const.ABORT_SESSION_REQUEST:
+                elif cmd_code == DCC_DEF.ABORT_SESSION_REQUEST:
                     return self.ASR[avp_code]
-                elif cmd_code == DCC_DEF.const.ABORT_SESSION_ANSWER:
+                elif cmd_code == DCC_DEF.ABORT_SESSION_ANSWER:
                     return self.ASA[avp_code]
-                elif cmd_code == DCC_DEF.const.DEVICE_WATCHDOG_REQUEST:
+                elif cmd_code == DCC_DEF.DEVICE_WATCHDOG_REQUEST:
                     return self.DWR[avp_code]
-                elif cmd_code == DCC_DEF.const.DEVICE_WATCHDOG_ANSWER:
+                elif cmd_code == DCC_DEF.DEVICE_WATCHDOG_ANSWER:
                     return self.DWA[avp_code]
-                elif cmd_code == DCC_DEF.const.DISCONNECT_PEER_REQUEST:
+                elif cmd_code == DCC_DEF.DISCONNECT_PEER_REQUEST:
                     return self.DPR[avp_code]
-                elif cmd_code == DCC_DEF.const.DISCONNECT_PEER_ANSWER:
+                elif cmd_code == DCC_DEF.DISCONNECT_PEER_ANSWER:
                     return self.DPA[avp_code]
-                elif cmd_code == DCC_DEF.const.CAPABILITIES_EXCHANGE_REQUEST:
+                elif cmd_code == DCC_DEF.CAPABILITIES_EXCHANGE_REQUEST:
                     return self.CER[avp_code]
-                elif cmd_code == DCC_DEF.const.CAPABILITIES_EXCHANGE_ANSWER:
+                elif cmd_code == DCC_DEF.CAPABILITIES_EXCHANGE_ANSWER:
                     return self.CEA[avp_code]
                 else:
                     raise DCC_ERR.AvpE_InvalidEtcParam, \
                             "Match CMD_CODE Error: cmd_code=%s, acp_code=%s" % (cmd_code, avp_code)
             else:
-                if cmd_code == DCC_DEF.const.CREDIT_CONTROL_REQUEST:
+                if cmd_code == DCC_DEF.CREDIT_CONTROL_REQUEST:
                     return self.CCR
-                elif cmd_code == DCC_DEF.const.CREDIT_CONTROL_ANSWER:
+                elif cmd_code == DCC_DEF.CREDIT_CONTROL_ANSWER:
                     return self.CCA
-                elif cmd_code == DCC_DEF.const.RE_AUTH_REQUEST:
+                elif cmd_code == DCC_DEF.RE_AUTH_REQUEST:
                     return self.RAR
-                elif cmd_code == DCC_DEF.const.RE_AUTH_ANSWER:
+                elif cmd_code == DCC_DEF.RE_AUTH_ANSWER:
                     return self.RAA
-                elif cmd_code == DCC_DEF.const.ABORT_SESSION_REQUEST:
+                elif cmd_code == DCC_DEF.ABORT_SESSION_REQUEST:
                     return self.ASR
-                elif cmd_code == DCC_DEF.const.ABORT_SESSION_ANSWER:
+                elif cmd_code == DCC_DEF.ABORT_SESSION_ANSWER:
                     return self.ASA
-                elif cmd_code == DCC_DEF.const.DEVICE_WATCHDOG_REQUEST:
+                elif cmd_code == DCC_DEF.DEVICE_WATCHDOG_REQUEST:
                     return self.DWR
-                elif cmd_code == DCC_DEF.const.DEVICE_WATCHDOG_ANSWER:
+                elif cmd_code == DCC_DEF.DEVICE_WATCHDOG_ANSWER:
                     return self.DWA
-                elif cmd_code == DCC_DEF.const.DISCONNECT_PEER_REQUEST:
+                elif cmd_code == DCC_DEF.DISCONNECT_PEER_REQUEST:
                     return self.DPR
-                elif cmd_code == DCC_DEF.const.DISCONNECT_PEER_ANSWER:
+                elif cmd_code == DCC_DEF.DISCONNECT_PEER_ANSWER:
                     return self.DPA
-                elif cmd_code == DCC_DEF.const.CAPABILITIES_EXCHANGE_REQUEST:
+                elif cmd_code == DCC_DEF.CAPABILITIES_EXCHANGE_REQUEST:
                     return self.CER
-                elif cmd_code == DCC_DEF.const.CAPABILITIES_EXCHANGE_ANSWER:
+                elif cmd_code == DCC_DEF.CAPABILITIES_EXCHANGE_ANSWER:
                     return self.CEA
                 else:
                     raise DCC_ERR.AvpE_InvalidEtcParam, \

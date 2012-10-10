@@ -90,10 +90,10 @@ class AVP(object):
         
         if decode_buf:  # 认定为需要解码
             # 详细定义见 dcc_defined
-            self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.const.DECODE_DCC_AVP_BEGIN
+            self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.DECODE_DCC_AVP_BEGIN
             
         else:           #认定为需要编码
-            self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.const.ENCODE_DCC_AVP_BEGIN
+            self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.ENCODE_DCC_AVP_BEGIN
         
         # 根据传入的 AVP_CODE 获取相应的配置信息
         self.my_avp_cfg = self.__get_avp_config()
@@ -106,8 +106,8 @@ class AVP(object):
         del self.my_avp_cfg
         
     def __repr__(self):
-        if (self.avp['AVP_CODE_STATE'] in (self.dcc.dcc_def.const.ENCODE_DCC_AVP_END,
-                                           self.dcc.dcc_def.const.DECODE_DCC_AVP_END)):
+        if (self.avp['AVP_CODE_STATE'] in (self.dcc.dcc_def.ENCODE_DCC_AVP_END,
+                                           self.dcc.dcc_def.DECODE_DCC_AVP_END)):
             return repr({repr(self.avp['AVP_CODE']):self.avp['AVP_DATA']})
         else:
             raise self.dcc.dcc_err.AvpE_InvalidCodeState, \
@@ -156,11 +156,11 @@ class AVP(object):
     def __set_avp_flag(self):
         '编码AVP_FLAG'
         if self.avp['AVP_VENDOR_ID'] != 0x00:
-            self.avp['AVP_FLAG'] |= self.dcc.dcc_def.const.AVP_FLAG_VENDOR
+            self.avp['AVP_FLAG'] |= self.dcc.dcc_def.AVP_FLAG_VENDOR
         if self.avp['AVP_MANDATORY'] != 0x00:
-            self.avp['AVP_FLAG'] |= self.dcc.dcc_def.const.AVP_FLAG_MANDATORY
+            self.avp['AVP_FLAG'] |= self.dcc.dcc_def.AVP_FLAG_MANDATORY
         if self.avp['AVP_PRIVATE'] != 0x00:
-            self.avp['AVP_FLAG'] |= self.dcc.dcc_def.const.AVP_FLAG_PRIVATE
+            self.avp['AVP_FLAG'] |= self.dcc.dcc_def.AVP_FLAG_PRIVATE
     
     def encode(self):
         '''对传入的对象进行编码
@@ -176,7 +176,7 @@ class AVP(object):
         
         self.__befor_encode_data()
         
-        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.const.ENCODE_DCC_MSG_BODY_BEGIN
+        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.ENCODE_DCC_MSG_BODY_BEGIN
         
         # 进行数据编码
         try:
@@ -185,13 +185,13 @@ class AVP(object):
             raise self.dcc.dcc_err.AvpE_DecodAvpError, \
                     "encode [%d] error!\n%s" % (self.avp['AVP_CODE'], e)
         
-        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.const.ENCODE_DCC_MSG_BODY_END
+        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.ENCODE_DCC_MSG_BODY_END
         
         # 对AVP进行整理打包
         self.avp['AVP_BUF'] = self.__encode_head() + self.avp['AVP_BUF']
         
         # 设置编码状态信息
-        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.const.ENCODE_DCC_AVP_END
+        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.ENCODE_DCC_AVP_END
             
         return self.avp['AVP_CODE_STATE']
     
@@ -229,7 +229,7 @@ class AVP(object):
     
     def __encode_head(self):
         '''编码AVP包头'''
-        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.const.ENCODE_DCC_AVP_BODY_BEGIN
+        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.ENCODE_DCC_AVP_BODY_BEGIN
         
         # 编码AVP_CODE
         avp_head_buf = self.dcc.pack_data2bin("!I", self.avp['AVP_CODE'])
@@ -252,7 +252,7 @@ class AVP(object):
         # 编码vandor_id
         avp_head_buf += self.__encode_avp_vandor_id()
         
-        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.const.ENCODE_DCC_AVP_BODY_END
+        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.ENCODE_DCC_AVP_BODY_END
         
         return avp_head_buf
     
@@ -287,7 +287,7 @@ class AVP(object):
                     "decode [%d] error!\n%s" % (self.avp['AVP_CODE'], e)
                 
         
-        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.const.DECODE_DCC_AVP_END
+        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.DECODE_DCC_AVP_END
         
         return self.avp
     
@@ -295,7 +295,7 @@ class AVP(object):
         '''解码AVP头
                      返回包头的总长度位置
         '''
-        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.const.DECODE_DCC_AVP_HEAD_BEGIN
+        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.DECODE_DCC_AVP_HEAD_BEGIN
         # 解码AVP_CODE, 因为已经在上层解析完毕，故当前不再解析
         offset_ = offset + 4 # 偏移 AVP_CODE 的位置
 
@@ -307,11 +307,11 @@ class AVP(object):
         self.__decode_avp_flag()
         
         # 解析AVP_vendor_ID
-        if self.avp['AVP_VENDOR_ID'] == self.dcc.dcc_def.const.AVP_FLAG_VENDOR:
+        if self.avp['AVP_VENDOR_ID'] == self.dcc.dcc_def.AVP_FLAG_VENDOR:
             self.__decode_avp_vonder_id(offset_)
             offset_ += 4 # 偏移 AVP_VANDOR_ID 的位置
         
-        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.const.DECODE_DCC_AVP_HEAD_END
+        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.DECODE_DCC_AVP_HEAD_END
         
         return offset_
     
@@ -327,25 +327,25 @@ class AVP(object):
     def __decode_avp_flag(self):
         '从AVP_FLAG中解析AVP_FLAG的各个属性'
         # 解析 VENDOR_ID
-        if (self.avp['AVP_FLAG'] & self.dcc.dcc_def.const.AVP_FLAG_VENDOR) \
-                == self.dcc.dcc_def.const.AVP_FLAG_VENDOR:       # 说明存在VONDER_ID
+        if (self.avp['AVP_FLAG'] & self.dcc.dcc_def.AVP_FLAG_VENDOR) \
+                == self.dcc.dcc_def.AVP_FLAG_VENDOR:       # 说明存在VONDER_ID
             if self.avp['AVP_LENGTH'] < 12:
                 raise self.dcc.dcc_err.AvpE_InvalidAvpLength, "The AVP Length less for min Len: 12!"
             
-            self.avp['AVP_VENDOR_ID'] = self.dcc.dcc_def.const.AVP_FLAG_VENDOR
+            self.avp['AVP_VENDOR_ID'] = self.dcc.dcc_def.AVP_FLAG_VENDOR
         else:
             if self.avp['AVP_LENGTH'] < 8:
                 raise self.dcc.dcc_err.AvpE_InvalidAvpLength, "The AVP Length less for min Len: 8!"
             
         # 解析 MANDATORY
-        if (self.avp['AVP_FLAG'] & self.dcc.dcc_def.const.AVP_FLAG_MANDATORY) \
-                == self.dcc.dcc_def.const.AVP_FLAG_MANDATORY:
-            self.avp['AVP_MANDATORY'] = self.dcc.dcc_def.const.AVP_FLAG_MANDATORY
+        if (self.avp['AVP_FLAG'] & self.dcc.dcc_def.AVP_FLAG_MANDATORY) \
+                == self.dcc.dcc_def.AVP_FLAG_MANDATORY:
+            self.avp['AVP_MANDATORY'] = self.dcc.dcc_def.AVP_FLAG_MANDATORY
         
         # 解析 PRIVATE
-        if (self.avp['AVP_FLAG'] & self.dcc.dcc_def.const.AVP_FLAG_PRIVATE) \
-                == self.dcc.dcc_def.const.AVP_FLAG_PRIVATE:
-            self.avp['AVP_PRIVATE'] = self.dcc.dcc_def.const.AVP_FLAG_PRIVATE
+        if (self.avp['AVP_FLAG'] & self.dcc.dcc_def.AVP_FLAG_PRIVATE) \
+                == self.dcc.dcc_def.AVP_FLAG_PRIVATE:
+            self.avp['AVP_PRIVATE'] = self.dcc.dcc_def.AVP_FLAG_PRIVATE
         
     def __decode_avp_vonder_id(self, offset):
         '解析AVP_VENDOR_ID'
@@ -357,7 +357,7 @@ class AVP(object):
         '''解码AVP包体数据
                      返回本次解码AVP包的总长度
         '''
-        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.const.DECODE_DCC_AVP_BODY_BEGIN
+        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.DECODE_DCC_AVP_BODY_BEGIN
         
         try:
             (self.avp['AVP_DATA'],) = self.dcc.unpack_from_bin(self.avp['AVP_CODE_OPERATOR'], 
@@ -374,7 +374,7 @@ class AVP(object):
         # 解码数据类型后进行一些后续处理
         self.__after_decode_data()
         
-        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.const.DECODE_DCC_AVP_BODY_END
+        self.avp['AVP_CODE_STATE'] = self.dcc.dcc_def.DECODE_DCC_AVP_BODY_END
         return self.avp['AVP_LENGTH']
     
     def __after_decode_data(self):
@@ -389,8 +389,8 @@ class AVP(object):
     
     def pavp(self, level=1):
         '打印编码过程信息'
-        if self.avp['AVP_CODE_STATE'] in (self.dcc.dcc_def.const.ENCODE_DCC_AVP_END,
-                                          self.dcc.dcc_def.const.DECODE_DCC_AVP_END):
+        if self.avp['AVP_CODE_STATE'] in (self.dcc.dcc_def.ENCODE_DCC_AVP_END,
+                                          self.dcc.dcc_def.DECODE_DCC_AVP_END):
             
             avp_flag_bin = self.dcc.bin(self.avp['AVP_FLAG'])
             

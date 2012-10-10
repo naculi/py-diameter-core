@@ -21,7 +21,7 @@ class MSG(object):
         self.dcc = dcc_instance
         
         self.dmsg = {}
-        self.dmsg['DCC_VERSION']      = self.dcc.dcc_def.const.DMSG_VERSION
+        self.dmsg['DCC_VERSION'] = self.dcc.dcc_def.DMSG_VERSION
         self.dmsg['DCC_LENGTH']       = 0x00
         self.dmsg['DCC_FLAGS']        = 0x00
         self.dmsg['DCC_REQUEST']      = 0x00      #需要将读取配置文件中的对应设置
@@ -30,7 +30,7 @@ class MSG(object):
         self.dmsg['DCC_TPOTENTIALLY'] = 0x00
         self.dmsg['DCC_CODE']         = 0x00
         self.dmsg['DCC_NAME']         = ""
-        self.dmsg['DCC_APP_ID']       = self.dcc.dcc_def.const.DMSG_APPLICATION_ID
+        self.dmsg['DCC_APP_ID'] = self.dcc.dcc_def.DMSG_APPLICATION_ID
         self.dmsg['DCC_HOPBYHOP']     = 0x00
         self.dmsg['DCC_ENDTOEND']     = 0x00
         
@@ -51,8 +51,8 @@ class MSG(object):
         
     def __repr__(self):
         '输出具体需要解包的json或者已经解包后的json'
-        if self.dmsg['DCC_STAT'] in (self.dcc.dcc_def.const.ENCODE_DCC_MSG_END,
-                                     self.dcc.dcc_def.const.DECODE_DCC_MSG_END):
+        if self.dmsg['DCC_STAT'] in (self.dcc.dcc_def.ENCODE_DCC_MSG_END,
+                                     self.dcc.dcc_def.DECODE_DCC_MSG_END):
             return self.dmsg['DCC_JSON']
         else:
             raise self.dcc.dcc_err.DccE_InvalidDccstate, \
@@ -66,7 +66,7 @@ class MSG(object):
                      如果清零，该消息必须在本地处理。
         '''
         # 预留，定义在dcc_defined
-        self.dmsg['DCC_FLAGS'] |= self.dcc.dcc_def.const.DMSG_FLAGS_PROXIABLE
+        self.dmsg['DCC_FLAGS'] |= self.dcc.dcc_def.DMSG_FLAGS_PROXIABLE
         
     def set_flags_error(self, cmd_code):
         '''E(rror) -如果设置，表明该消息包含一个协议差错，
@@ -76,9 +76,9 @@ class MSG(object):
         # 预留，定义在dcc_defined
         # 对外开放接口，当是一个错误消息的时候，设置这个标记位
         if cmd_code[1] != 1 and \
-           self.dmsg['DCC_STAT'] not in (self.dcc.dcc_def.const.ENCODE_DCC_MSG_HEAD_END,
-                                         self.dcc.dcc_def.const.ENCODE_DCC_MSG_END):
-            self.dmsg['DCC_FLAGS'] |= self.dcc.dcc_def.const.DMSG_FLAGS_ERROR
+           self.dmsg['DCC_STAT'] not in (self.dcc.dcc_def.ENCODE_DCC_MSG_HEAD_END,
+                                         self.dcc.dcc_def.ENCODE_DCC_MSG_END):
+            self.dmsg['DCC_FLAGS'] |= self.dcc.dcc_def.DMSG_FLAGS_ERROR
         else:
             raise self.dcc.dcc_err.DccE_InvalidMethod, \
                     "Call set_flags_error() Error:\n \
@@ -98,9 +98,9 @@ class MSG(object):
         '''
         # 预留，定义在dcc_defined
         # 对外接口,当重复发送消息时需要设置此标记
-        if self.dmsg['DCC_STAT'] not in (self.dcc.dcc_def.const.ENCODE_DCC_MSG_HEAD_END,
-                                         self.dcc.dcc_def.const.ENCODE_DCC_MSG_END):
-            self.dmsg['DCC_FLAGS'] |= self.dcc.dcc_def.const.DMSG_FLAGS_TPOTENTIALLY
+        if self.dmsg['DCC_STAT'] not in (self.dcc.dcc_def.ENCODE_DCC_MSG_HEAD_END,
+                                         self.dcc.dcc_def.ENCODE_DCC_MSG_END):
+            self.dmsg['DCC_FLAGS'] |= self.dcc.dcc_def.DMSG_FLAGS_TPOTENTIALLY
         else:
             raise self.dcc.dcc_err.DccE_InvalidMethod, \
                     "The Proc Status Type Error! Call set_flags_tpotentially() Error:\n \
@@ -144,7 +144,7 @@ class MSG(object):
         
         # 设置 R(equest)
         if cmd_code[1] == 1:
-            self.dmsg['DCC_FLAGS'] |= self.dcc.dcc_def.const.DMSG_FLAGS_REQUEST
+            self.dmsg['DCC_FLAGS'] |= self.dcc.dcc_def.DMSG_FLAGS_REQUEST
             
         # 设置 P(roxiable)
         self.__set_flags_proxiable()
@@ -181,7 +181,7 @@ class MSG(object):
         
     def __pack_head(self, cmd_code, end_by_end_random_number):
         '''编码消息头'''
-        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.const.ENCODE_DCC_MSG_HEAD_BEGIN
+        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.ENCODE_DCC_MSG_HEAD_BEGIN
         pack_buf = ""
         
         self.__set_head_info(cmd_code, end_by_end_random_number)
@@ -198,13 +198,13 @@ class MSG(object):
         
         pack_buf += self.dcc.pack_data2bin("!I", self.dmsg['DCC_ENDTOEND'])
         
-        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.const.ENCODE_DCC_MSG_HEAD_END
+        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.ENCODE_DCC_MSG_HEAD_END
         
         return pack_buf
 
     def __pack_AVP(self, cmd_code, avp_list):
         '''将AVP都编码打包到一起'''
-        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.const.ENCODE_DCC_MSG_BODY_BEGIN
+        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.ENCODE_DCC_MSG_BODY_BEGIN
         pack_buf = ""
         
         for decode_avp_dict in avp_list:
@@ -223,7 +223,7 @@ class MSG(object):
             # 将所有编码后的数据整合到一起
             pack_buf += avp_instance.avp['AVP_BUF']
             
-        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.const.ENCODE_DCC_MSG_BODY_END
+        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.ENCODE_DCC_MSG_BODY_END
         return pack_buf
 
     def pack_json(self, cmd_code, json_str, end_by_end_random_number):
@@ -244,7 +244,7 @@ class MSG(object):
                         
         编码avp的列表，输出编码后的BUF
         '''
-        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.const.ENCODE_DCC_MSG_BEGIN
+        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.ENCODE_DCC_MSG_BEGIN
         
         # 根据 cmd_code 获取 DCC_NAME
         self.dmsg['DCC_NAME'] = self.dcc.dcc_cfg.Code2Cmd[cmd_code][2]
@@ -262,7 +262,7 @@ class MSG(object):
         # 将包体与包头组合
         self.dmsg['DCC_BUF'] = dcc_head_buf + dcc_avp_buf
         
-        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.const.ENCODE_DCC_MSG_END
+        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.ENCODE_DCC_MSG_END
         return self.dmsg['DCC_BUF']
         
     def unpack_json(self, pack_buf):
@@ -272,7 +272,7 @@ class MSG(object):
     
     def __unpack_head(self, pack_buf):
         '''解码包头内容'''
-        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.const.DECODE_DCC_MSG_HEAD_BEGIN
+        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.DECODE_DCC_MSG_HEAD_BEGIN
         offset_ = 0
         (ver_and_len,) = self.dcc.unpack_from_bin("!I", pack_buf, offset_)
         offset_ += 4
@@ -292,26 +292,26 @@ class MSG(object):
         self.dmsg['DCC_FLAGS'] = flags_and_code >> 24
         self.dmsg['DCC_CODE']  = flags_and_code & 0x00FFFFFF
         
-        if self.dmsg['DCC_FLAGS'] & self.dcc.dcc_def.const.DMSG_FLAGS_REQUEST \
-            == self.dcc.dcc_def.const.DMSG_FLAGS_REQUEST:
+        if self.dmsg['DCC_FLAGS'] & self.dcc.dcc_def.DMSG_FLAGS_REQUEST \
+            == self.dcc.dcc_def.DMSG_FLAGS_REQUEST:
             self.dmsg['DCC_REQUEST'] = '1'
         else:
             self.dmsg['DCC_REQUEST'] = '0'
             
-        if self.dmsg['DCC_FLAGS'] & self.dcc.dcc_def.const.DMSG_FLAGS_PROXIABLE \
-            == self.dcc.dcc_def.const.DMSG_FLAGS_REQUEST:
+        if self.dmsg['DCC_FLAGS'] & self.dcc.dcc_def.DMSG_FLAGS_PROXIABLE \
+            == self.dcc.dcc_def.DMSG_FLAGS_REQUEST:
             self.dmsg['DCC_PROXIABLE'] = '1'
         else:
             self.dmsg['DCC_PROXIABLE'] = '0'
             
-        if self.dmsg['DCC_FLAGS'] & self.dcc.dcc_def.const.DMSG_FLAGS_ERROR \
-            == self.dcc.dcc_def.const.DMSG_FLAGS_REQUEST:
+        if self.dmsg['DCC_FLAGS'] & self.dcc.dcc_def.DMSG_FLAGS_ERROR \
+            == self.dcc.dcc_def.DMSG_FLAGS_REQUEST:
             self.dmsg['DCC_ERROR'] = '1'
         else:
             self.dmsg['DCC_ERROR'] = '0'
             
-        if self.dmsg['DCC_FLAGS'] & self.dcc.dcc_def.const.DMSG_FLAGS_TPOTENTIALLY \
-            == self.dcc.dcc_def.const.DMSG_FLAGS_REQUEST:
+        if self.dmsg['DCC_FLAGS'] & self.dcc.dcc_def.DMSG_FLAGS_TPOTENTIALLY \
+            == self.dcc.dcc_def.DMSG_FLAGS_REQUEST:
             self.dmsg['DCC_TPOTENTIALLY'] = '1'
         else:
             self.dmsg['DCC_TPOTENTIALLY'] = '0'
@@ -323,7 +323,7 @@ class MSG(object):
         (self.dmsg['DCC_ENDTOEND'],) = self.dcc.unpack_from_bin("!I", pack_buf, offset_)
         offset_ += 4
         
-        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.const.DECODE_DCC_MSG_HEAD_END
+        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.DECODE_DCC_MSG_HEAD_END
         return offset_
     
     def unpack(self, pack_buf):
@@ -332,7 +332,7 @@ class MSG(object):
                     
         解码BUF，输出解码后的实例
         '''
-        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.const.DECODE_DCC_AVP_BEGIN
+        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.DECODE_DCC_AVP_BEGIN
         self.dmsg['DCC_BUF'] = pack_buf
         avp_pack_buf = ""
         
@@ -343,7 +343,7 @@ class MSG(object):
         _cmd_code = (int(self.dmsg['DCC_CODE']), int(self.dmsg['DCC_REQUEST']))
         self.dmsg['DCC_NAME'] = self.dcc.dcc_cfg.Code2Cmd[_cmd_code][2]
         
-        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.const.DECODE_DCC_MSG_BODY_BEGIN
+        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.DECODE_DCC_MSG_BODY_BEGIN
         while offset != self.dmsg['DCC_LENGTH']:
             # 确定具体需要解包的AVP BUF
             avp_pack_buf = self.dmsg['DCC_BUF'][offset:]
@@ -369,14 +369,14 @@ class MSG(object):
             
             offset += lengthset
             
-        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.const.DECODE_DCC_MSG_BODY_END
+        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.DECODE_DCC_MSG_BODY_END
         
         # 将AVP组合为需要返回的数据类型，之后装为json
         self.dmsg['DCC_JSON'] = self.dcc.dumps_json(
                                     self.__compress_json_obj(self.dmsg['DCC_AVP_LIST'])
                                     )
 
-        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.const.DECODE_DCC_MSG_END
+        self.dmsg['DCC_STAT'] = self.dcc.dcc_def.DECODE_DCC_MSG_END
         return self.dmsg
     
     def __compress_json_obj(self, avp_instance_list):
@@ -392,8 +392,8 @@ class MSG(object):
     
     def pmsg(self, level=1):
         '''按照格式打印消息包的信息'''
-        if self.dmsg['DCC_STAT'] in (self.dcc.dcc_def.const.ENCODE_DCC_MSG_END,
-                                     self.dcc.dcc_def.const.DECODE_DCC_MSG_END):
+        if self.dmsg['DCC_STAT'] in (self.dcc.dcc_def.ENCODE_DCC_MSG_END,
+                                     self.dcc.dcc_def.DECODE_DCC_MSG_END):
             if level == 0:
                 msg_txt = ""
                 bin_flags = self.dcc.bin(self.dmsg['DCC_FLAGS'])
